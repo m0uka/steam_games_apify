@@ -1,3 +1,5 @@
+# Steam Games Scraper
+
 Get data from Steam games scraped from the front page of the Steam marketplace.
 Extract game name, description, release date, platforms, features, genres, any current deals and prices, etc..
 Download your data as HTML table, JSON, CSV, Excel, XML.
