@@ -1,0 +1,18 @@
+{
+    "title": "Steam games on sale",
+    "description": "lorem ipsum",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+      "onlyOnSale": {
+        "title": "Only on sale",
+        "type": "boolean",
+        "description": "Add games only on sale (Auto-scrape must be enabled)"
+      }
+    },
+    "required": [
+      "trackedUrls",
+      "autoTrack"
+    ]
+  }
+  

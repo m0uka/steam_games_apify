@@ -1,0 +1,17 @@
+{
+  "name": "steam_games_sale",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apify": "^2.3.2",
+    "playwright": "^1.22.0"
+  }
+}
