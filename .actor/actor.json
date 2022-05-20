@@ -1,13 +1,13 @@
 {
     "actorSpecification": 1,
-    "name": "steam-games-scraper",
-    "title": "Steam Game Scraper",
+    "name": "steam-store-scraper",
+    "title": "Steam Store Scraper",
     "description": "Scrapes Steam games from Steam's front page.",
     "version": "1.0.0",
     "storages": {
         "dataset": {
             "actorSpecification": 1,
-            "title": "Steam Game Scraper",
+            "title": "Steam Store Scraper",
             "description": "To see all scraped properties, export the whole dataset or select All fields instead of Overview",
             "views": {
                 "overview": {

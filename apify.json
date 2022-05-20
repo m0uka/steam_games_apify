@@ -1,5 +1,5 @@
 {
-	"name": "steam-game-tracker",
+	"name": "steam-store-scraper",
 	"version": "0.1",
 	"buildTag": "latest",
 	"env": null
