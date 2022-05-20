@@ -15,7 +15,7 @@
                     "description": "",
                     "transformation": {
                         "fields": [
-                            "name",
+                            "title",
                             "url",
                             "description",
                             "price",
@@ -28,9 +28,9 @@
                         "component": "table",
                         "columns": [
                             {
-                                "label": "Website",
+                                "label": "Game",
                                 "format": "text",
-                                "field": "name"
+                                "field": "title"
                             },
                             {
                                 "label": "URL",
