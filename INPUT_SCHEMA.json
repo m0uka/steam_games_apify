@@ -1,6 +1,6 @@
 {
     "title": "Steam games on sale",
-    "description": "Enter your configuration below!",
+    "description": "Get store page data from Steam. <br/> Enter your configuration below!",
     "type": "object",
     "schemaVersion": 1,
     "properties": {
