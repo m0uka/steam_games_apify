@@ -81,7 +81,6 @@ Apify.main(async () => {
                 let languages = {}
 
                 const languageTable = $('#languageTable table tr')
-                // console.log(languageTable.text())
 
                 for (const row of languageTable) {
                     const r = $(row)
@@ -105,6 +104,14 @@ Apify.main(async () => {
                 let features = []
                 for (let feature of featuresEl) {
                     features.push($(feature).text())
+                }
+
+                // Popular tags
+
+                let popularTags = []
+
+                for (let tag of $('.popular_tags a')) {
+                    popularTags.push($(tag).text().trim())
                 }
 
                 // Platforms
@@ -167,6 +174,7 @@ Apify.main(async () => {
                     supportedPlatforms,
                     features,
                     genres,
+                    popularTags,
                     languages,
 
                     price,
