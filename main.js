@@ -47,6 +47,11 @@ Apify.main(async () => {
                 const glanceEl = $('.glance_ctn_responsive_left').first()
 
                 const title = $('#appHubAppName').text().trim()
+                if (title === "") {
+                    // ignore store pages that are not games
+                    return
+                }
+
                 const description = $('.game_description_snippet').text().trim()
                 const headerImage = $('.game_header_image_full')?.attr()?.src
                 const releaseDate = $('.release_date').find('.date').text()
