@@ -1,0 +1,71 @@
+{
+    "actorSpecification": 1,
+    "name": "steam-games-scraper",
+    "title": "Steam Game Scraper",
+    "description": "Scrapes Steam games from Steam's front page.",
+    "version": "1.0.0",
+    "storages": {
+        "dataset": {
+            "actorSpecification": 1,
+            "title": "Steam Game Scraper",
+            "description": "To see all scraped properties, export the whole dataset or select All fields instead of Overview",
+            "views": {
+                "overview": {
+                    "title": "Overview",
+                    "description": "",
+                    "transformation": {
+                        "fields": [
+                            "name",
+                            "url",
+                            "description",
+                            "price",
+                            "salePercentage",
+                            "recentReviews",
+                            "allReviews"
+                        ]
+                    },
+                    "display": {
+                        "component": "table",
+                        "columns": [
+                            {
+                                "label": "Website",
+                                "format": "text",
+                                "field": "name"
+                            },
+                            {
+                                "label": "URL",
+                                "format": "link",
+                                "field": "url"
+                            },
+                            {
+                                "label": "Description",
+                                "format": "text",
+                                "field": "description"
+                            },
+                            {
+                                "label": "Price",
+                                "format": "text",
+                                "field": "price"
+                            },
+                            {
+                                "label": "Sale",
+                                "format": "text",
+                                "field": "salePercentage"
+                            },
+                            {
+                                "label": "Recent reviews",
+                                "format": "text",
+                                "field": "recentReviews"
+                            },
+                            {
+                                "label": "All reviews",
+                                "format": "text",
+                                "field": "allReviews"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
