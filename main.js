@@ -15,7 +15,7 @@ Apify.main(async () => {
         requestQueue,
 
         useSessionPool: true,
-        maxConcurrency: 1000,
+        maxConcurrency: 50,
 
         preNavigationHooks: [
             async (crawlingContext, requestAsBrowserOptions) => {
@@ -26,116 +26,125 @@ Apify.main(async () => {
             }
         ],
         handlePageFunction: async ({ $, request }) => {
-            try {
+            if (request.userData.label === 'START') {
 
-                if (request.userData.label === 'START') {
+                await Apify.utils.enqueueLinks({
+                    $,
+                    requestQueue,
+                    // The selector is from our earlier code.
+                    selector: 'a[href*="/app/"]',
+                    // The baseUrl option automatically resolves relative URLs.
+                    baseUrl: new URL(request.url).origin,
+                });
 
-                    console.log(request)
-                    // console.log($('html').text())
+            } else {
 
-                    await Apify.utils.enqueueLinks({
-                        $,
-                        requestQueue,
-                        // The selector is from our earlier code.
-                        selector: 'a[href*="/app/"]',
-                        // The baseUrl option automatically resolves relative URLs.
-                        baseUrl: new URL(request.url).origin,
-                    });
-
-                } else {
-
-                    const gameAreaPurchaseEl = $('.game_area_purchase_game_wrapper .game_area_purchase_game').first()
-                    const glanceEl = $('.glance_ctn_responsive_left').first()
-
-                    const title = $('#appHubAppName').text().trim()
-                    const description = $('.game_description_snippet').text().trim()
-                    const headerImage = $('.game_header_image_full').attr().src
-                    const releaseDate = $('.release_date').find('.date').text()
-
-                    const recentReviews = $('.game_review_summary').first().text()
-                    const allReviews = $('.game_review_summary').last().text()
-
-                    const developer = $('#developers_list a').text()
-                    const publisher = glanceEl.find('.dev_row').last().find(".summary a").text().trim()
-
-                    const comingSoon = $('.game_area_comingsoon').find('.content h1 span').text() != ''
-
-                    const platformsEl = $('.game_area_purchase_platform')
-                    const spansEl = platformsEl.find('span')
-
-                    const genresEl = $('#genresAndManufacturer').find('span').first().find('a')
-                    let genres = []
-                    for (let genre of genresEl) {
-                        genres.push($(genre).text())
-                    }
-
-                    const featuresEl = $('.game_area_features_list_ctn a')
-
-                    let features = []
-                    for (let feature of featuresEl) {
-                        features.push($(feature).text())
-                    }
-
-                    let supportedPlatforms = []
-                    if (spansEl.is((_, el) => el.attribs.class.includes('win'))) {
-                        supportedPlatforms.push('windows')
-                    }
-
-                    if (spansEl.is((_, el) => el.attribs.class.includes('linux'))) {
-                        supportedPlatforms.push('linux')
-                    }
-
-                    if (spansEl.is((_, el) => el.attribs.class.includes('mac'))) {
-                        supportedPlatforms.push('mac')
-                    }
-
-                    if (spansEl.is((_, el) => el.attribs.class.includes('vr_required'))) {
-                        supportedPlatforms.push('vr_required')
-                    }
-
-                    let price = gameAreaPurchaseEl.find('.game_purchase_price').text().trim()
-                    let sale = false
-                    let salePercentage = null
-                    let saleUntil = null
-
-                    if (price === '') {
-                        sale = true
-                        salePercentage = gameAreaPurchaseEl.find('.discount_pct').text().trim()
-                        saleUntil = gameAreaPurchaseEl.find('.game_purchase_discount_countdown').text().trim()
-
-                        price = gameAreaPurchaseEl.find('.discount_final_price').text().trim()
-                    }
-
-                    if (onlyOnSale && !sale) return
-
-                    await Apify.pushData({
-                        title,
-                        description,
-                        headerImage,
-
-                        releaseDate,
-                        comingSoon,
-
-                        supportedPlatforms,
-                        features,
-                        genres,
-
-                        price,
-
-                        sale,
-                        salePercentage,
-                        saleUntil,
-
-                        recentReviews,
-                        allReviews,
-
-                        developer,
-                        publisher
-                    })
+                let gameAreaPurchaseEl = $('div[id^=game_area_purchase_section_add_to_cart]').first()
+                if (!gameAreaPurchaseEl || gameAreaPurchaseEl.text().trim() === '') {
+                    gameAreaPurchaseEl = $('.game_area_purchase_game').first()
                 }
-            }
-            catch (err) {
-                console.error(err)
+
+                const glanceEl = $('.glance_ctn_responsive_left').first()
+
+                const title = $('#appHubAppName').text().trim()
+                const description = $('.game_description_snippet').text().trim()
+                const headerImage = $('.game_header_image_full')?.attr()?.src
+                const releaseDate = $('.release_date').find('.date').text()
+
+                const recentReviews = $('.game_review_summary').first().text()
+                const allReviews = $('.game_review_summary').last().text()
+
+                const developers = $('#developers_list a').toArray().map((x) => $(x).text())
+                const publishers = glanceEl.find('.dev_row').last().find(".summary a").toArray().map((x) => $(x).text())
+
+                const comingSoon = $('.game_area_comingsoon').first().text().trim() != ""
+
+                const platformsEl = $('.game_area_purchase_platform')
+                const spansEl = platformsEl.find('span')
+
+                const genresEl = $('#genresAndManufacturer span').first().find('a')
+                let genres = []
+                for (let genre of genresEl) {
+                    genres.push($(genre).text())
+                }
+
+                const featuresEl = $('.game_area_features_list_ctn a')
+
+                let features = []
+                for (let feature of featuresEl) {
+                    features.push($(feature).text())
+                }
+
+                let supportedPlatforms = []
+                if (spansEl.is((_, el) => el.attribs.class.includes('win'))) {
+                    supportedPlatforms.push('windows')
+                }
+
+                if (spansEl.is((_, el) => el.attribs.class.includes('linux'))) {
+                    supportedPlatforms.push('linux')
+                }
+
+                if (spansEl.is((_, el) => el.attribs.class.includes('mac'))) {
+                    supportedPlatforms.push('mac')
+                }
+
+                if (spansEl.is((_, el) => el.attribs.class.includes('vr_required'))) {
+                    supportedPlatforms.push('vr_required')
+                }
+
+                let isDLC
+                let baseDLCGame
+                if (features.includes('DLC') || features.includes('Downloadable Content')) {
+                    isDLC = true
+                    baseDLCGame = $('#gameHeaderImageCtn').parent().find('.glance_details p a').attr('href')
+                }
+
+                const earlyAccess = $('#earlyAccessHeader').text().trim() !== ''
+
+                let price = gameAreaPurchaseEl.find('.game_purchase_price').text().trim()
+                let sale = false
+                let salePercentage = null
+                let saleUntil = null
+
+                if (price === '') {
+                    sale = true
+                    salePercentage = gameAreaPurchaseEl.find('.discount_pct').text().trim()
+                    saleUntil = gameAreaPurchaseEl.find('.game_purchase_discount_countdown').text().trim()
+
+                    price = gameAreaPurchaseEl.find('.discount_final_price').text().trim()
+                }
+
+                if (onlyOnSale && !sale) return
+
+                await Apify.pushData({
+                    url: request.url,
+                    title,
+                    description,
+                    headerImage,
+
+                    releaseDate,
+                    comingSoon,
+                    earlyAccess,
+
+                    supportedPlatforms,
+                    features,
+                    genres,
+
+                    price,
+
+                    sale,
+                    salePercentage,
+                    saleUntil,
+
+                    recentReviews,
+                    allReviews,
+
+                    isDLC,
+                    baseDLCGame,
+
+                    developers,
+                    publishers
+                })
             }
         },
     });
