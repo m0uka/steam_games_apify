@@ -1,7 +1,7 @@
 import Apify from 'apify'
 
 Apify.main(async () => {
-    let { onlyOnSale } = await Apify.getInput()
+    let { onlyOnSale, onlyReleased } = await Apify.getInput()
 
     const requestQueue = await Apify.openRequestQueue()
     await requestQueue.addRequest({
@@ -18,7 +18,7 @@ Apify.main(async () => {
         maxConcurrency: 50,
 
         preNavigationHooks: [
-            async (crawlingContext, requestAsBrowserOptions) => {
+            async (_crawlingContext, requestAsBrowserOptions) => {
                 requestAsBrowserOptions.headers = {
                     // We need to set this to prevent the age check page
                     "Cookie": "birthtime=0; path=/; max-age=315360000"
@@ -31,9 +31,7 @@ Apify.main(async () => {
                 await Apify.utils.enqueueLinks({
                     $,
                     requestQueue,
-                    // The selector is from our earlier code.
                     selector: 'a[href*="/app/"]',
-                    // The baseUrl option automatically resolves relative URLs.
                     baseUrl: new URL(request.url).origin,
                 });
 
@@ -120,6 +118,7 @@ Apify.main(async () => {
                 }
 
                 if (onlyOnSale && !sale) return
+                if (onlyReleased && comingSoon) return
 
                 await Apify.pushData({
                     url: request.url,

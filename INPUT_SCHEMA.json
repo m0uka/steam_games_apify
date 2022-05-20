@@ -3,7 +3,18 @@
     "description": "lorem ipsum",
     "type": "object",
     "schemaVersion": 1,
-    "properties": {},
+    "properties": {
+      "onlyOnSale": {
+        "title": "Only on sale",
+        "type": "boolean",
+        "description": "Add games only on sale"
+      },
+      "onlyReleased": {
+        "title": "Only released",
+        "type": "boolean",
+        "description": "Add only released games (don't add upcoming)"
+      }
+    },
     "required": []
   }
   
