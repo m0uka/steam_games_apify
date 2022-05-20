@@ -33,7 +33,7 @@ Apify.main(async () => {
                     requestQueue,
                     selector: 'a[href*="/app/"]',
                     baseUrl: new URL(request.url).origin,
-                });
+                })
 
             } else {
 
@@ -194,7 +194,7 @@ Apify.main(async () => {
                 })
             }
         },
-    });
+    })
 
     await crawler.run()
 })
