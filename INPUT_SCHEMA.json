@@ -3,15 +3,7 @@
     "description": "lorem ipsum",
     "type": "object",
     "schemaVersion": 1,
-    "properties": {
-      "onlyOnSale": {
-        "title": "Only on sale",
-        "type": "boolean",
-        "description": "Add games only on sale (Auto-scrape must be enabled)"
-      }
-    },
-    "required": [
-      "autoTrack"
-    ]
+    "properties": {},
+    "required": []
   }
   
