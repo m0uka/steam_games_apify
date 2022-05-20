@@ -37,6 +37,8 @@ Apify.main(async () => {
 
             } else {
 
+                // General
+
                 let gameAreaPurchaseEl = $('div[id^=game_area_purchase_section_add_to_cart]').first()
                 if (!gameAreaPurchaseEl || gameAreaPurchaseEl.text().trim() === '') {
                     gameAreaPurchaseEl = $('.game_area_purchase_game').first()
@@ -61,9 +63,12 @@ Apify.main(async () => {
                 const publishers = glanceEl.find('.dev_row').last().find(".summary a").toArray().map((x) => $(x).text())
 
                 const comingSoon = $('.game_area_comingsoon').first().text().trim() != ""
+                const earlyAccess = $('#earlyAccessHeader').text().trim() !== ''
 
                 const platformsEl = $('.game_area_purchase_platform')
                 const spansEl = platformsEl.find('span')
+
+                // Genres
 
                 const genresEl = $('#genresAndManufacturer span').first().find('a')
                 let genres = []
@@ -71,12 +76,38 @@ Apify.main(async () => {
                     genres.push($(genre).text())
                 }
 
+                // Languages
+
+                let languages = {}
+
+                const languageTable = $('#languageTable table tr')
+                // console.log(languageTable.text())
+
+                for (const row of languageTable) {
+                    const r = $(row)
+                    if (r.find('th').text() != '') continue
+                    if (r.hasClass("unsupported")) continue
+
+                    const languageName = r.find('td').first().text().trim()
+                    const langSupport = {
+                        interface: ($(r.find('td').get(1)).text().trim()) === '✔',
+                        sound: ($(r.find('td').get(2)).text().trim()) === '✔',
+                        subtitles: ($(r.find('td').get(3)).text().trim()) === '✔',
+                    }
+
+                    languages[languageName] = langSupport
+                }
+
+                // Features
+
                 const featuresEl = $('.game_area_features_list_ctn a')
 
                 let features = []
                 for (let feature of featuresEl) {
                     features.push($(feature).text())
                 }
+
+                // Platforms
 
                 let supportedPlatforms = []
                 if (spansEl.is((_, el) => el.attribs.class.includes('win'))) {
@@ -95,6 +126,8 @@ Apify.main(async () => {
                     supportedPlatforms.push('vr_required')
                 }
 
+                // DLC
+
                 let isDLC
                 let baseDLCGame
                 if (features.includes('DLC') || features.includes('Downloadable Content')) {
@@ -102,7 +135,7 @@ Apify.main(async () => {
                     baseDLCGame = $('#gameHeaderImageCtn').parent().find('.glance_details p a').attr('href')
                 }
 
-                const earlyAccess = $('#earlyAccessHeader').text().trim() !== ''
+                // Price
 
                 let price = gameAreaPurchaseEl.find('.game_purchase_price').text().trim()
                 let sale = false
@@ -116,6 +149,7 @@ Apify.main(async () => {
 
                     price = gameAreaPurchaseEl.find('.discount_final_price').text().trim()
                 }
+
 
                 if (onlyOnSale && !sale) return
                 if (onlyReleased && comingSoon) return
@@ -133,6 +167,7 @@ Apify.main(async () => {
                     supportedPlatforms,
                     features,
                     genres,
+                    languages,
 
                     price,
 
